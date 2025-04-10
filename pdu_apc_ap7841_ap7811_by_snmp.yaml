@@ -1,0 +1,113 @@
+zabbix_export:
+  version: '7.2'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: be00c7dee0b74078832187f41f609d99
+      template: 'PDU APC AP7841 and AP7811 by SNMP'
+      name: 'PDU APC AP7841 and AP7811 by SNMP'
+      description: |
+        Zabbix template created by Kosmo Cloud Computing using PowerNet MIB v4.3.2
+        
+        Models:
+        APC AP7841
+        APC AP7811
+        
+        If you have any questions, please contact us at support@kosmo.cloud.
+        We'd love to hear from you!
+      groups:
+        - name: Templates
+      items:
+        - uuid: 22cf1026686f49b0ad3113b261527ec6
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          history: 7d
+          tags:
+            - tag: Application
+              value: System
+          triggers:
+            - uuid: e3882f2148c64b6cb5def31a2b793b37
+              expression: 'max(/PDU APC AP7841 and AP7811 by SNMP/icmpping,#3)=0'
+              name: '{HOST.NAME} is unavailable for ICMP'
+              priority: HIGH
+        - uuid: cfb798fd864043d0a67b73fe523b400f
+          name: 'Total Load'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.12.2.3.1.1.2.1
+          key: rPDULoadStatusLoad.1
+          history: 7d
+          value_type: FLOAT
+          units: A
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Bank Load'
+          triggers:
+            - uuid: a63acf8bb6064e1fb06709e2981708a0
+              expression: 'last(/PDU APC AP7841 and AP7811 by SNMP/rPDULoadStatusLoad.1)>18'
+              name: 'Overload Alarm in Total Load on {HOST.NAME}'
+              priority: HIGH
+        - uuid: f97740530dee4a92a38fbf55518a9e84
+          name: 'Bank B1 Load'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.12.2.3.1.1.2.2
+          key: rPDULoadStatusLoad.2
+          history: 7d
+          value_type: FLOAT
+          units: A
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Bank Load'
+          triggers:
+            - uuid: 11e4aa87f1c94db6b733f2059929e51b
+              expression: 'last(/PDU APC AP7841 and AP7811 by SNMP/rPDULoadStatusLoad.2)>12'
+              name: 'Overload Alarm in Bank B1 Load on {HOST.NAME}'
+              priority: HIGH
+        - uuid: 09cee246cfc94afebc1ef8951e5923e9
+          name: 'Bank B2 Load'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.12.2.3.1.1.2.3
+          key: rPDULoadStatusLoad.3
+          history: 7d
+          value_type: FLOAT
+          units: A
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Bank Load'
+          triggers:
+            - uuid: c792f9581efb4912a7527bd7542d3388
+              expression: 'last(/PDU APC AP7841 and AP7811 by SNMP/rPDULoadStatusLoad.3)>12'
+              name: 'Overload Alarm in Bank B2 Load on {HOST.NAME}'
+              priority: HIGH
+        - uuid: 6da343a82264411cbcaefecb0109d0b4
+          name: 'System Uptime'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.3.0
+          key: sysUpTime.0
+          history: 7d
+          units: uptime
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: System
+      tags:
+        - tag: class
+          value: power
+        - tag: target
+          value: apc

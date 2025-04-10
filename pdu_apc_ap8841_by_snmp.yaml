@@ -1,0 +1,219 @@
+zabbix_export:
+  version: '7.2'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 696043e0d3c345a28acb80d5b3a7fe1b
+      template: 'PDU APC AP8841 by SNMP'
+      name: 'PDU APC AP8841 by SNMP'
+      description: |
+        Zabbix template created by Kosmo Cloud Computing using PowerNet MIB v4.3.2
+        
+        If you have any questions, please contact us at support@kosmo.cloud.
+        We'd love to hear from you!
+      groups:
+        - name: Templates
+      items:
+        - uuid: 859f3bdf44f14aa5ad362c5cbd807c11
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          history: 7d
+          tags:
+            - tag: Application
+              value: System
+          triggers:
+            - uuid: 606602fef56b477fa1e6269bfa350f72
+              expression: 'max(/PDU APC AP8841 by SNMP/icmpping,#3)=0'
+              name: '{HOST.NAME} is unavailable for ICMP'
+              priority: HIGH
+        - uuid: 37177d5ae7dd40d9b54e8cc15fc30ca5
+          name: 'Bank Status Current Bank 1'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.8.3.1.5.1
+          key: rPDU2BankStatusCurrent.1
+          history: 7d
+          value_type: FLOAT
+          units: A
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Bank Load'
+          triggers:
+            - uuid: 45a3000bf966482dbfc7bc8f20c49fe2
+              expression: 'last(/PDU APC AP8841 by SNMP/rPDU2BankStatusCurrent.1)>15'
+              name: 'Overload Alarm in Bank Status Current on {HOST.NAME}'
+              opdata: 'Current value: {ITEM.LASTVALUE1}'
+              priority: HIGH
+        - uuid: c49499249c1f402fa29299012360fa3d
+          name: 'Bank Status Current Bank 2'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.8.3.1.5.2
+          key: rPDU2BankStatusCurrent.2
+          history: 7d
+          value_type: FLOAT
+          units: A
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Bank Load'
+          triggers:
+            - uuid: 0b592b29f4714e5b896cbbb067d184db
+              expression: 'last(/PDU APC AP8841 by SNMP/rPDU2BankStatusCurrent.2)>15'
+              name: 'Overload Alarm in Bank Status Current on {HOST.NAME}'
+              opdata: 'Current value: {ITEM.LASTVALUE1}'
+              priority: HIGH
+        - uuid: 3215886d68894a3ca67fa6ae9b512175
+          name: 'Device Status Peak Load'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.4.3.1.6.1
+          key: rPDU2DevicePeakPower.1
+          history: 7d
+          value_type: FLOAT
+          units: kW
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: 'Device Load'
+        - uuid: eb377e9c5f67402289cb95692b11f424
+          name: 'Device Status Energy'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.4.3.1.9.1
+          key: rPDU2DeviceStatusEnergy.1
+          history: 7d
+          value_type: FLOAT
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Device Load'
+        - uuid: d691af6666014bdf88e2e2c8a5b63ba1
+          name: 'Device Status Load'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.4.3.1.5.1
+          key: rPDU2DeviceStatusPower.1
+          history: 7d
+          value_type: FLOAT
+          units: kW
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: 'Device Load'
+          triggers:
+            - uuid: f0afd8c032b8419b898f6d1c7b0f4253
+              expression: 'last(/PDU APC AP8841 by SNMP/rPDU2DeviceStatusPower.1)>4'
+              name: 'Overload Alarm in Device Status Load on {HOST.NAME}'
+              opdata: 'Current value: {ITEM.LASTVALUE1}'
+              priority: HIGH
+        - uuid: 7cfe6623fa3b4ed6ae1354c9f060f6b4
+          name: 'Phase Status Current'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.6.3.1.5.1
+          key: rPDU2PhaseStatusCurrent.1
+          history: 7d
+          value_type: FLOAT
+          units: A
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: 'Phase Load'
+          triggers:
+            - uuid: aa54a000cf044fe48d596867496f045c
+              expression: 'last(/PDU APC AP8841 by SNMP/rPDU2PhaseStatusCurrent.1)>18'
+              name: 'Overload Alarm in Phase Status Current on {HOST.NAME}'
+              opdata: 'Current value: {ITEM.LASTVALUE1}'
+              priority: HIGH
+        - uuid: e6782af7512746c3884d9cc4f10a3b2d
+          name: 'Phase Status Power'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.6.3.1.7.1
+          key: rPDU2PhaseStatusPower.1
+          history: 7d
+          value_type: FLOAT
+          units: kW
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: 'Phase Load'
+        - uuid: f7c518d25bd84f2e9da54b7e90908268
+          name: 'Phase Status Voltage'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.318.1.1.26.6.3.1.6.1
+          key: rPDU2PhaseStatusVoltage.1
+          history: 7d
+          units: V
+          tags:
+            - tag: Application
+              value: 'Phase Load'
+        - uuid: 3ab2986e2d194e8584ee76f3f6bda1a1
+          name: 'Device Status Temperature Name'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.318.1.1.26.10.2.2.1.3.1
+          key: rPDU2SensorTempHumidityStatusName.1
+          delay: 1d
+          history: 7d
+          value_type: CHAR
+          tags:
+            - tag: Application
+              value: Sensor
+        - uuid: 1b584881d00c44ed8074103f4a8cf5d4
+          name: 'Device Status Temperature'
+          type: SNMP_AGENT
+          snmp_oid: 1.3.6.1.4.1.318.1.1.26.10.2.2.1.8.1
+          key: rPDU2SensorTempHumidityStatusTempC.1
+          history: 7d
+          value_type: FLOAT
+          units: C
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.1'
+          tags:
+            - tag: Application
+              value: Sensor
+          triggers:
+            - uuid: c8e002381aa541838c6e98feca526271
+              expression: 'last(/PDU APC AP8841 by SNMP/rPDU2SensorTempHumidityStatusTempC.1)>28'
+              name: 'Overload Alarm in Temperature Status on {HOST.NAME}'
+              opdata: 'Current value: {ITEM.LASTVALUE1}'
+              priority: HIGH
+        - uuid: 19877b4abeb34611a6f01cbd4e536476
+          name: 'System Uptime'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.1.3.0
+          key: sysUpTime.0
+          history: 7d
+          units: uptime
+          preprocessing:
+            - type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            - tag: Application
+              value: System
+      tags:
+        - tag: class
+          value: power
+        - tag: target
+          value: apc
